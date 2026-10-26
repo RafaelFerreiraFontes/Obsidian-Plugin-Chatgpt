@@ -49,3 +49,7 @@ Citações são verificáveis pela leitura: caminho, linhas, hash e URI local. O
 - [Obsidian: Vault API e Vault.process](https://docs.obsidian.md/Plugins/Vault)
 
 As afirmações de produto se baseiam nessas fontes; a segurança e a compatibilidade do protótipo dependem da implementação e dos testes locais, não da mera existência da documentação.
+
+## Atualização 0.1.1
+
+O caminho do Chat sem executor local foi detalhado em [CHAT.md](CHAT.md): Secure MCP Tunnel até o mesmo processo stdio. O helper prepara configuração e pacote; não há túnel provisionado nem acesso no Chat demonstrado. O perfil padrão continua stdio local. Consulte VALIDACAO.md para separar testes automatizados, baseline Codex e pendências reais.

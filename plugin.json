@@ -1,9 +1,14 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "obsidian-vault-bridge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Ponte local para vaults Obsidian selecionados e autorizados pelo usuário.",
-  "keywords": ["obsidian", "vault", "local", "mcp"],
+  "keywords": [
+    "obsidian",
+    "vault",
+    "local",
+    "mcp"
+  ],
   "extensions": {
     "com.openai": {
       "requires_local_executor": true,

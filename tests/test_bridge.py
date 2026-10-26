@@ -37,6 +37,26 @@ class BridgeTests(unittest.TestCase):
         self.assertTrue(read["uri"].startswith("obsidian://open?path="))
         self.assertEqual(read["citation"], "Nota á.md:L2-L2")
 
+    def test_status_checks_directory_without_claiming_note_access(self):
+        status = b.bridge_status()
+        self.assertTrue(status["vault_access"]["v"]["directory_readable"])
+        self.assertFalse(status["vault_access"]["v"]["note_read_verified"])
+        (self.root / ".obsidian").rmdir()
+        status = b.bridge_status()
+        self.assertTrue(status["vaults"]["v"]["read"])
+        self.assertFalse(status["vault_access"]["v"]["directory_readable"])
+
+    def test_status_handles_denied_directory(self):
+        with patch.object(b.os, "scandir", side_effect=PermissionError("denied")):
+            status = b.bridge_status()
+        self.assertFalse(status["vault_access"]["v"]["directory_readable"])
+        self.assertEqual(status["vault_access"]["v"]["error"], "denied")
+
+    def test_initialize_explains_execution_boundary(self):
+        result = b.dispatch({"jsonrpc": "2.0", "id": 1, "method": "initialize"})["result"]
+        self.assertIn("Secure MCP Tunnel", result["instructions"])
+        self.assertEqual(result["serverInfo"]["version"], b.VERSION)
+
     def test_backup_and_conflict(self):
         old = b.write_note("v", "a.md", "original", "new")
         new = b.write_note("v", "a.md", "updated", old["sha256"])

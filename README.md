@@ -1,4 +1,4 @@
-# Obsidian Vault Bridge — 0.1.0
+# Obsidian Vault Bridge — 0.1.1
 
 Protótipo de plugin local para ChatGPT Desktop/Codex com um servidor MCP stdio em Python. Não afiliado ao Obsidian. Não requer chave da API OpenAI e não abre porta de rede.
 
@@ -15,6 +15,10 @@ Protótipo de plugin local para ChatGPT Desktop/Codex com um servidor MCP stdio 
 | Gerenciar plugins | CLI oficial: instalar, habilitar, desabilitar, desinstalar. Confirmação nativa em cada ação. |
 | Executar comandos | IDs da paleta do Obsidian; confirmação nativa em cada ação. Não oferece shell nem `eval`. |
 | Revogar | Remove a autorização da ponte; não desinstala plugins já instalados. |
+
+## Chat e Codex
+
+O pacote padrão usa stdio local. Chat sem executor local precisa de Secure MCP Tunnel; o indicador conectado não comprova acesso ao diretório. Veja [configuração e diagnóstico do Chat](docs/CHAT.md). A versão 0.1.1 prepara esse caminho, mas não cria credenciais nem provisiona um túnel automaticamente.
 
 ## Requisitos e instalação
 
