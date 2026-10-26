@@ -1,3 +1,5 @@
+Atualização 0.1.4: execução automática em segundo plano, com worker temporário por operação e chave DPAPI. Consulte docs/EXECUCAO-AUTOMATICA.md (ou EXECUCAO-AUTOMATICA.md nesta pasta). Instruções anteriores que exigem manter o terminal aberto são históricas e foram substituídas.
+
 Estado atualizado: a conexão registrada foi vinculada ao plugin e o teste real de listagem no Chat funcionou. Consulte docs/IMPLANTACAO-CHAT.md (ou IMPLANTACAO-CHAT.md nesta pasta) para evidências, versões e operação. As pendências descritas abaixo registram a investigação anterior.
 
 # Validação — 0.1.1 — 26/10/2026
@@ -39,3 +41,5 @@ foi reproduzida com uma captura de erro. Não afirmar resolução ponta a ponta.
 
 O relatório original 0.1.0 está preservado no commit inicial
 982bcef5023a6e7060af1ce820aa5532bacc0a49.
+
+Validação 0.1.4: 35 testes, 34 aprovados e 1 ignorado (symlink). No Chat, status duas vezes retornou PIDs distintos, ambos confirmados encerrados pelo Windows; list_notes(limit=1) passou. Runtime gerenciado permaneceu running/healthy/ready sem janela. Parada/reinício via chave DPAPI e reexecução da entrada Startup foram testados. Logout/login completo e escrita/CLI em dados reais não foram testados.

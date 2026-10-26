@@ -23,7 +23,7 @@ MAX_BYTES = 1024 * 1024
 EXTENSIONS = {".md", ".base"}
 DATA = Path(os.environ.get("LOCALAPPDATA", str(Path.home() / ".local/share"))) / "ObsidianVaultBridge"
 CONFIG = DATA / "grants.json"
-VERSION = "0.1.1"
+VERSION = "0.1.4"
 INSTRUCTIONS = (
     "Comece por bridge_status; conexão do plugin não comprova acesso ao vault. "
     "Confira vault_access e faça list_notes/read_note antes de afirmar acesso real. "
@@ -167,7 +167,8 @@ def bridge_status():
         except (OSError, ValueError, PermissionError) as exc:
             access[vault_id] = {"directory_readable": False, "error": str(exc),
                                 "note_read_verified": False}
-    return {"version": VERSION, "vaults": authorized, "vault_access": access,
+    return {"version": VERSION, "worker_pid": os.getpid(),
+            "vaults": authorized, "vault_access": access,
             "transport": "stdio", "execution": "vault_computer",
             "chat_requires": "local executor or a provisioned Secure MCP Tunnel",
             "cli_available": bool(cli_executable()),

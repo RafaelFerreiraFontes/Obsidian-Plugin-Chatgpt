@@ -27,7 +27,7 @@ class ChatTunnelTests(unittest.TestCase):
         argv = t.client_command("init", TEST_ID, python="C:/Program Files/Python/python.exe")
         self.assertEqual(argv[-2], "--mcp-command")
         self.assertTrue(argv[-1].startswith('"C:/Program Files/Python/python.exe" "'))
-        self.assertIn("server/bridge.py", argv[-1])
+        self.assertIn("server/operation_gateway.py", argv[-1])
         self.assertNotIn("CONTROL_PLANE_API_KEY", " ".join(argv))
 
     def test_doctor_and_run_share_profile(self):

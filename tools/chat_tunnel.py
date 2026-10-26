@@ -30,7 +30,7 @@ def client_command(action, identifier=None, executable="tunnel-client", python=N
         # Forward slashes avoid Windows backslashes being interpreted by the
         # client's command-string parser. Quote both executable and script.
         command = " ".join(json.dumps(str(p).replace("\\", "/")) for p in
-                           [python or sys.executable, ROOT / "server/bridge.py"])
+                           [python or sys.executable, ROOT / "server/operation_gateway.py"])
         return [executable, "init", "--sample", "sample_mcp_stdio_local",
                 "--profile", PROFILE, "--tunnel-id", identifier, "--mcp-command", command]
     if action not in {"doctor", "run"}:

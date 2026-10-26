@@ -4,7 +4,7 @@
     "obsidian-vault-bridge": {
       "type": "stdio",
       "command": "python",
-      "args": ["${PLUGIN_ROOT}/server/bridge.py"],
+      "args": ["${PLUGIN_ROOT}/server/operation_gateway.py"],
       "cwd": "${PLUGIN_ROOT}"
     }
   }

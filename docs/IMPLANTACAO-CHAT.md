@@ -1,3 +1,5 @@
+Atualização 0.1.4: execução automática em segundo plano, com worker temporário por operação e chave DPAPI. Consulte docs/EXECUCAO-AUTOMATICA.md (ou EXECUCAO-AUTOMATICA.md nesta pasta). Instruções anteriores que exigem manter o terminal aberto são históricas e foram substituídas.
+
 # Implantação e verificação no Chat — 26/10/2026
 
 ## Resultado real

@@ -1,6 +1,8 @@
+Atualização 0.1.4: execução automática em segundo plano, com worker temporário por operação e chave DPAPI. Consulte docs/EXECUCAO-AUTOMATICA.md (ou EXECUCAO-AUTOMATICA.md nesta pasta). Instruções anteriores que exigem manter o terminal aberto são históricas e foram substituídas.
+
 Estado atualizado: a conexão registrada foi vinculada ao plugin e o teste real de listagem no Chat funcionou. Consulte docs/IMPLANTACAO-CHAT.md (ou IMPLANTACAO-CHAT.md nesta pasta) para evidências, versões e operação. As pendências descritas abaixo registram a investigação anterior.
 
-# Obsidian Vault Bridge — 0.1.3
+# Obsidian Vault Bridge — 0.1.4
 
 Protótipo de plugin local para ChatGPT Desktop/Codex com um servidor MCP stdio em Python. Não afiliado ao Obsidian. Não requer chave da API OpenAI e não abre porta de rede.
 
