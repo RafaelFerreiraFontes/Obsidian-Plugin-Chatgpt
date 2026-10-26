@@ -1,0 +1,26 @@
+# Python runtime and local tooling
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+# Local credentials; keep documented examples versioned
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+# Bridge user data must never enter source control
+/ObsidianVaultBridge/
+/grants.json
+/audit.jsonl
+/backups/
+# Generated packages and OS files
+/dist/
+/build/
+*.egg-info/
+Thumbs.db
+.DS_Store
