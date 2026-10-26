@@ -14,6 +14,7 @@ spec = importlib.util.spec_from_file_location("chat_tunnel", SCRIPT)
 t = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(t)
 TEST_ID = "tunnel_" + "a" * 32  # Synthetic fixture; never submitted to OpenAI.
+TEST_APP = "asdk_app_test_fixture"
 
 
 class ChatTunnelTests(unittest.TestCase):
@@ -39,10 +40,10 @@ class ChatTunnelTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "chat.zip"
             original = (t.ROOT / "mcp.json").read_bytes()
-            t.package(TEST_ID, output)
+            t.package(TEST_ID, output, TEST_APP)
             with zipfile.ZipFile(output) as z:
                 self.assertIsNone(z.testzip())
-                self.assertEqual(set(z.namelist()), {"plugin.json", "mcp.json", "assets/icon.svg",
+                self.assertEqual(set(z.namelist()), {"plugin.json", "mcp.json", ".app.json", "assets/icon.svg",
                                                    "skills/obsidian-vault/SKILL.md"})
                 manifest = json.loads(z.read("plugin.json"))
                 source = json.loads((t.ROOT / "plugin.json").read_text(encoding="utf-8-sig"))
@@ -50,6 +51,8 @@ class ChatTunnelTests(unittest.TestCase):
                 self.assertEqual(manifest["extensions"]["com.openai"]["interface"],
                                  source["extensions"]["com.openai"]["interface"])
                 self.assertFalse(manifest["extensions"]["com.openai"]["requires_local_executor"])
+                self.assertEqual(manifest["extensions"]["com.openai"]["apps"], "./.app.json")
+                self.assertEqual(json.loads(z.read(".app.json"))["apps"]["obsidian-vault-bridge"]["id"], TEST_APP)
                 server = json.loads(z.read("mcp.json"))["mcpServers"]["obsidian-vault-bridge"]
                 self.assertEqual(server["type"], "streamable-http")
                 self.assertEqual(server["extensions"]["com.openai"]["tunnelId"], TEST_ID)
@@ -57,11 +60,16 @@ class ChatTunnelTests(unittest.TestCase):
                 self.assertNotIn("command", server)
             self.assertEqual((t.ROOT / "mcp.json").read_bytes(), original)
             with self.assertRaises(FileExistsError):
-                t.package(TEST_ID, output)
+                t.package(TEST_ID, output, TEST_APP)
 
     def test_package_cannot_pollute_source_directory(self):
         with self.assertRaises(ValueError):
-            t.package(TEST_ID, t.ROOT / "generated.zip")
+            t.package(TEST_ID, t.ROOT / "generated.zip", TEST_APP)
+
+    def test_package_requires_registered_app(self):
+        for app in [None, "plugin_asdk_app_fixture", "https://example.com", "asdk_app_../bad"]:
+            with self.subTest(app=app), self.assertRaises(ValueError):
+                t.package(TEST_ID, t.ROOT.parent / "unused.zip", app)
 
     def test_missing_tunnel_is_not_treated_as_connected(self):
         r = subprocess.run([sys.executable, str(SCRIPT), "init"], capture_output=True,

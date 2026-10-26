@@ -1,0 +1,33 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "author": {
+    "email": "fedete234@gmail.com",
+    "name": "Rafael Ferreira Fontes"
+  },
+  "description": "Ponte local para vaults Obsidian selecionados e autorizados pelo usuário.",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "capabilities": [],
+        "category": "Productivity",
+        "composerIcon": "assets/icon.svg",
+        "defaultPrompt": "Conecte um vault local do Obsidian e mostre as permissões autorizadas.",
+        "developerName": "Rafael Ferreira Fontes",
+        "displayName": "Obsidian Vault Bridge",
+        "logo": "assets/icon.svg",
+        "longDescription": "Protótipo local: seleção nativa de vault, leitura, busca, citações com linhas, escrita com verificação de versão e backup, fórmulas Bases e operações na instância Obsidian via CLI oficial. Instalação de plugins e comandos exigem confirmação local. Requer Python 3.10+; funções da instância requerem Obsidian CLI. Não afiliado ao Obsidian.",
+        "shortDescription": "Conecte seu vault local"
+      },
+      "requires_local_executor": false,
+      "apps": "./.app.json"
+    }
+  },
+  "keywords": [
+    "obsidian",
+    "vault",
+    "local",
+    "mcp"
+  ],
+  "name": "obsidian-vault-bridge",
+  "version": "0.1.3"
+}

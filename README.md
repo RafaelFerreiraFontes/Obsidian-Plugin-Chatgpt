@@ -1,4 +1,6 @@
-# Obsidian Vault Bridge — 0.1.1
+Estado atualizado: a conexão registrada foi vinculada ao plugin e o teste real de listagem no Chat funcionou. Consulte docs/IMPLANTACAO-CHAT.md (ou IMPLANTACAO-CHAT.md nesta pasta) para evidências, versões e operação. As pendências descritas abaixo registram a investigação anterior.
+
+# Obsidian Vault Bridge — 0.1.3
 
 Protótipo de plugin local para ChatGPT Desktop/Codex com um servidor MCP stdio em Python. Não afiliado ao Obsidian. Não requer chave da API OpenAI e não abre porta de rede.
 

@@ -41,15 +41,18 @@ def client_command(action, identifier=None, executable="tunnel-client", python=N
     return result
 
 
-def package(identifier, output):
+def package(identifier, output, registered_app_id=None):
     """Build a separate candidate; never mutate the local installation."""
     tunnel_id(identifier)
+    if not registered_app_id or not re.fullmatch(r"asdk_app_[A-Za-z0-9_-]+", registered_app_id):
+        raise ValueError("Registre e conecte o MCP no ChatGPT primeiro; informe seu --app-id real.")
     output = Path(output).resolve()
     if output.is_relative_to(ROOT):
         raise ValueError("Salve o ZIP fora da pasta do plugin.")
     manifest = json.loads((ROOT / "plugin.json").read_text(encoding="utf-8-sig"))
     remote = copy.deepcopy(manifest)
     remote["extensions"]["com.openai"]["requires_local_executor"] = False
+    remote["extensions"]["com.openai"]["apps"] = "./.app.json"
     mcp = {"$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
            "mcpServers": {"obsidian-vault-bridge": {
                "type": "streamable-http", "extensions": {"com.openai": {
@@ -57,7 +60,9 @@ def package(identifier, output):
     # Tunnel/workspace authorization protects this route; this is not a public
     # unauthenticated HTTP listener. No URL or localhost endpoint is invented.
     files = {"plugin.json": json.dumps(remote, ensure_ascii=False, indent=2),
-             "mcp.json": json.dumps(mcp, indent=2)}
+             "mcp.json": json.dumps(mcp, indent=2),
+             ".app.json": json.dumps({"apps": {"obsidian-vault-bridge": {
+                 "id": registered_app_id}}}, indent=2)}
     # The account ingester owns generated compatibility files. Read them back
     # after any future upload rather than guessing its legacy tunnel encoding.
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -75,13 +80,16 @@ def main():
     parser.add_argument("action", choices=["check", "init", "doctor", "run", "package"])
     parser.add_argument("--tunnel-id", type=tunnel_id)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--app-id", help="ID real asdk_app_ da conexão registrada no ChatGPT")
     args = parser.parse_args()
     if args.action in {"init", "package"} and not args.tunnel_id:
         parser.error("--tunnel-id é obrigatório; provisione o túnel na OpenAI Platform.")
     if args.action == "package":
         if not args.output:
             parser.error("--output é obrigatório")
-        print(package(args.tunnel_id, args.output))
+        if not args.app_id:
+            parser.error("--app-id é obrigatório; mcp.json sozinho não registra ferramentas no Chat.")
+        print(package(args.tunnel_id, args.output, args.app_id))
         print("Candidato gerado; ID, associação à conta e acesso no Chat ainda precisam de validação.")
         return 0
     executable = shutil.which("tunnel-client")

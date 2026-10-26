@@ -1,3 +1,5 @@
+Estado atualizado: a conexão registrada foi vinculada ao plugin e o teste real de listagem no Chat funcionou. Consulte docs/IMPLANTACAO-CHAT.md (ou IMPLANTACAO-CHAT.md nesta pasta) para evidências, versões e operação. As pendências descritas abaixo registram a investigação anterior.
+
 # Acesso no Chat: transporte e ativação
 
 ## Diagnóstico de 26/10/2026
@@ -78,7 +80,7 @@ ferramentas e faça uma chamada real nesse modo.
 6. Para atualizar o MESMO plugin da conta, gere um candidato separado:
 
    ```powershell
-   python tools/chat_tunnel.py package --tunnel-id <ID_REAL> --output <ZIP_FORA_DO_PROJETO>
+   python tools/chat_tunnel.py package --tunnel-id <ID_REAL> --app-id <APP_REGISTRADO_REAL> --output <ZIP_FORA_DO_PROJETO>
    ```
 
    O ZIP preserva nome e apresentação e substitui o transporte por

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "obsidian-vault-bridge": {
+      "type": "streamable-http",
+      "extensions": {
+        "com.openai": {
+          "tunnelId": "tunnel_6adf20f8028c8191ac3a2d02fb08392f",
+          "auth": {
+            "type": "none"
+          }
+        }
+      }
+    }
+  }
+}

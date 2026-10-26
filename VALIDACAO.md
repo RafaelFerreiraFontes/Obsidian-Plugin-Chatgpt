@@ -1,3 +1,5 @@
+Estado atualizado: a conexão registrada foi vinculada ao plugin e o teste real de listagem no Chat funcionou. Consulte docs/IMPLANTACAO-CHAT.md (ou IMPLANTACAO-CHAT.md nesta pasta) para evidências, versões e operação. As pendências descritas abaixo registram a investigação anterior.
+
 # Validação — 0.1.1 — 26/10/2026
 
 ## Resultado desta alteração
@@ -37,5 +39,3 @@ foi reproduzida com uma captura de erro. Não afirmar resolução ponta a ponta.
 
 O relatório original 0.1.0 está preservado no commit inicial
 982bcef5023a6e7060af1ce820aa5532bacc0a49.
-
-A tentativa de abrir a configuração de túneis na Platform terminou na tela de login; o provisionamento requer entrada do usuário nessa conta.
