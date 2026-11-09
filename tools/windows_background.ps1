@@ -31,14 +31,63 @@ function Read-Config {
 }
 
 function Read-RuntimeStatus($Config) {
-    $text = (& $Config.client runtimes status $aliasName --json 2>$null) -join "`n"
-    if ($text) { return $text }
-    return '{"process_running":false,"healthy":false,"ready":false}'
+    $offline = '{"process_running":false,"healthy":false,"ready":false}'
+
+    try {
+        $output = @(
+            & $Config.client runtimes status $aliasName --json 2>&1
+        )
+
+        $exitCode = $LASTEXITCODE
+        $text = ($output | Out-String).Trim()
+
+        if ($exitCode -eq 0 -and $text) {
+            return $text
+        }
+
+        if ($text -match 'is not known') {
+            return $offline
+        }
+
+        throw "Falha no status do runtime (codigo $exitCode): $text"
+    }
+    catch {
+        if ($_.Exception.Message -match 'is not known') {
+            return $offline
+        }
+
+        throw
+    }
 }
 
 function Is-Ready([string]$Text) {
     return ($Text -match '"process_running"\s*:\s*true' -and
             $Text -match '"healthy"\s*:\s*true' -and $Text -match '"ready"\s*:\s*true')
+}
+
+function Write-GatewayLauncher($Config) {
+    # tunnel-client 0.0.18 parses --mcp-command as whitespace-delimited words
+    # on Windows, so quoting a gateway path containing spaces is not sufficient.
+    # Keep its command target to a no-space .cmd path and let cmd.exe preserve
+    # the original absolute paths when it starts Python.
+    $launcherPath = Join-Path (Split-Path $Config.client) 'obsidian-mcp.cmd'
+    if ($launcherPath -match '\s') { throw 'O caminho do runtime não pode conter espaços.' }
+    $escape = { param([string]$Value) $Value.Replace('"', '""') }
+    $content = "@echo off`r`n`"$(& $escape $Config.python)`" `"$(& $escape $Config.gateway)`"`r`n"
+    Set-Content -LiteralPath $launcherPath -Value $content -Encoding ascii
+    return $launcherPath.Replace('\', '/')
+}
+
+function Get-SafeStatusSummary([string]$Text) {
+    try {
+        $status = $Text | ConvertFrom-Json
+        $issues = @($status.issues) + @($status.local.issues) | Where-Object { $_ }
+        $summary = "process_running=$($status.process_running); healthy=$($status.healthy); ready=$($status.ready)"
+        if ($issues.Count) { $summary += '; issues=' + ($issues -join ' | ') }
+        return [regex]::Replace($summary, '(?i)(sk-|key_)[A-Za-z0-9_.-]+', '$1[REDACTED]')
+    } catch {
+        return 'status indisponível ou inválido'
+    }
 }
 
 try {
@@ -122,7 +171,7 @@ try {
         try { $env:CONTROL_PLANE_API_KEY = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($pointer) }
         finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($pointer); $secureKey.Dispose() }
         try {
-            $command = '"' + $config.python.Replace('\','/') + '" "' + $config.gateway.Replace('\','/') + '"'
+            $command = Write-GatewayLauncher $config
             $connectArgs = @('runtimes','connect','--alias',$aliasName,'--tunnel-id',$config.tunnel_id,
                 '--runtime-api-key','env:CONTROL_PLANE_API_KEY','--mcp-command',$command,
                 '--profile',$aliasName,'--profile-dir',$config.profile_dir,'--json')
@@ -134,7 +183,8 @@ try {
                 if (Is-Ready $currentStatus) { exit 0 }
                 Start-Sleep -Seconds 1
             }
-            throw 'Runtime iniciado, mas ainda sem confirmação de saúde e prontidão.'
+            throw ('Runtime iniciou, mas não ficou saudável/pronto em 25 segundos. ' + (Get-SafeStatusSummary $currentStatus) +
+                '. Consulte o log local do tunnel-client para a causa.')
         } finally { Remove-Item Env:CONTROL_PLANE_API_KEY -ErrorAction SilentlyContinue }
     } finally {
         if ($locked) { $mutex.ReleaseMutex() }
@@ -142,7 +192,7 @@ try {
     }
 } catch {
     if (Test-Path -LiteralPath $RuntimeRoot) {
-        $message = [regex]::Replace($_.Exception.Message, 'sk-[A-Za-z0-9_-]+', '[REDACTED]')
+        $message = [regex]::Replace($_.Exception.Message, '(?i)(sk-|key_)[A-Za-z0-9_.-]+', '$1[REDACTED]')
         $message | Set-Content -LiteralPath (Join-Path $RuntimeRoot 'setup-error.log') -Encoding utf8
     }
     Write-Error 'Não foi possível configurar ou iniciar a ponte. A chave não é incluída no diagnóstico.'

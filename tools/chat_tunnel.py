@@ -100,7 +100,7 @@ def main():
                           "chat_access_verified": False}))
         return 0 if executable and key_present else 2
     if not executable:
-        parser.error("tunnel-client não instalado. Consulte docs/CHAT.md.")
+        parser.error("tunnel-client não instalado. Consulte o README do projeto.")
     if not key_present:
         parser.error("Defina CONTROL_PLANE_API_KEY localmente; não a envie no chat.")
     return subprocess.run(client_command(args.action, args.tunnel_id, executable),
