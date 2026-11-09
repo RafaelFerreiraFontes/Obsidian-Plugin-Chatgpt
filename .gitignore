@@ -6,6 +6,7 @@ venv/
 .pytest_cache/
 .coverage
 htmlcov/
+
 # Local credentials; keep documented examples versioned
 .env
 .env.*
@@ -13,11 +14,13 @@ htmlcov/
 !.env.sample
 *.pem
 *.key
+
 # Bridge user data must never enter source control
 /ObsidianVaultBridge/
 /grants.json
 /audit.jsonl
 /backups/
+
 # Generated packages and OS files
 /dist/
 /build/
@@ -28,3 +31,6 @@ Thumbs.db
 # Per-user encrypted runtime secrets
 *.dpapi
 .runtime/
+
+# Local Secure MCP Tunnel package
+MCP-Setup/
